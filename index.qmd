@@ -1,0 +1,12 @@
+---
+title: "Index"
+format: html
+author: "Alan Hunter - HNTALA001"
+date: "February 2026"
+---
+
+This is the home page for my Quarto project for Assignment 1. The various practicals in this assignment can be found below:
+
+- [Practical 1](Prac_1.qmd)
+- [Practical 3](Prac_3.qmd)
+- [Practical 4](Prac_4.qmd)

@@ -1,0 +1,181 @@
+---
+title: "Prac_12"
+format: html
+---
+
+### Setup
+
+```{r}
+library(foreach) # uses %do%
+library(doParallel) # uses %dopar%
+library(MASS) # glalaxies data for Q2
+library(iterators) # for Question 4 (irnorm)
+```
+
+### Quetsion 1
+
+```{r}
+cl <- makeCluster(3)
+registerDoParallel(cl)
+
+exp_mean_and_var <- foreach(i = 1:1000, .combine = rbind) %dopar% {
+    random_sample <- rexp(100,rate=1)
+    sample_mean <- mean(random_sample)
+    sample_variance <- var(random_sample)
+    rbind(sample_mean,sample_variance)
+    c(sample_mean, sample_variance)
+}
+
+stopCluster(cl)
+```
+
+```{r}
+colnames(exp_mean_and_var) <- c("Mean", "Variance")
+head(exp_mean_and_var)
+```
+
+### Question 2
+
+```{r}
+data <- galaxies
+head(data)
+```
+Serial Processing:
+
+```{r}
+system.time({
+  galaxies_bs_medians <- foreach(i = 1:1000, .combine = c) %do% {
+    bs_sample <- sample(galaxies,length(galaxies),replace = T)
+    bs_median <- median(bs_sample)
+}
+})
+```
+
+
+```{r}
+hist(galaxies_bs_medians)
+```
+
+In parallel:
+
+```{r}
+
+```
+
+
+```{r}
+cl <- makeCluster(3)
+registerDoParallel(cl)
+
+system.time({
+  galaxies_bs_medians <- foreach(i = 1:1000, .combine = c) %dopar% {
+    bs_sample <- sample(data,length(data),replace = T)
+    bs_median <- median(bs_sample)
+}
+})
+
+
+stopCluster(cl)
+```
+
+The serial processing time was approximately equal to the parallel processing time.
+
+Now we will try doing 1000 bootstrap samples at a time:
+
+```{r}
+cl <- makeCluster(3)
+registerDoParallel(cl)
+
+system.time({
+  galaxies_bs_medians_1000 <- foreach(i = 1:3, .combine = c) %dopar% {
+    bs_sample_1000 <- replicate(1000,median(sample(data,length(data),replace = T)))
+    bs_sample_1000
+}
+})
+
+stopCluster(cl)
+```
+
+```{r}
+hist(galaxies_bs_medians_1000)
+```
+In this case, despite computing 3000 bootstrap medians, the processing time was much faster.
+
+### Question 3
+
+Coverage of a percentile bootstrap confidence interval for the median:
+
+```{r}
+cl <- makeCluster(3)
+registerDoParallel(cl)
+
+sample <- rexp(n = 50, rate = 1)
+sample_mean <- mean(sample)
+n <- 1000
+
+system.time({
+  coverage_pci_bs <- foreach(i = 1:n, .combine = c) %dopar% {
+    new_sample <- rexp(n = 50, rate = 1/sample_mean)
+    bs_sample_1000 <- replicate(n,mean(sample(new_sample,length(new_sample),replace = T)))
+    mean_quantiles <- quantile(bs_sample_1000,probs = c(0.025,0.975))
+  coverage_check <- if (mean_quantiles[1] <= sample_mean & sample_mean <= mean_quantiles[2]) {
+  1
+  } else {
+    0
+  }
+  coverage_check
+}
+})
+
+stopCluster(cl)
+```
+We now have the number of times our confidence interval contained the original sample mean out of 1000. Therefore, the coverage is as follows:
+
+```{r}
+coverage <- sum(coverage_pci_bs)/n
+coverage
+```
+### Question 4
+
+```{r}
+set.seed(1234)
+
+cl <- makeCluster(3)
+registerDoParallel(cl)
+
+vector_maxes <- foreach(i = 1:3, .combine = c, .packages = "iterators") %dopar% {
+  vec <- irnorm(n = 5, mean = 0, sd = 1)
+  # Pull all numbers into a numeric vector
+  vec_numbers <- numeric(5)
+  vec_numbers[1] <- nextElem(vec)
+  vec_numbers[2] <- nextElem(vec)
+  vec_numbers[3] <- nextElem(vec)
+  vec_numbers[4] <- nextElem(vec)
+  vec_numbers[5] <- nextElem(vec)
+  max(vec_numbers)
+}
+
+stopCluster(cl)
+
+vector_maxes
+```
+
+
+```{r}
+set.seed(1234)  # set seed BEFORE foreach
+
+# Use foreach and irnorm to generate 3 vectors of 5 random normals
+largest_values <- foreach(i = 1:3, .combine = c) %do% {
+  # create an iterator of 5 normal random numbers
+  vec_iter <- irnorm(n = 5, mean = 0, sd = 1)
+  
+  # pull all 5 numbers from the iterator into a numeric vector
+  vec <- sapply(1:5, function(x) nextElem(vec_iter))
+  
+  # find the largest value
+  max(vec)
+}
+
+largest_values
+```
+
