@@ -1,11 +1,11 @@
 ---
-title: "Prac_12"
+title: "Practical 12"
 format: html
 ---
 
 ### Setup
 
-```{r}
+```{r setup, warning=FALSE, message=FALSE}
 library(foreach) # uses %do%
 library(doParallel) # uses %dopar%
 library(MASS) # glalaxies data for Q2
@@ -183,3 +183,5 @@ largest_values
 
 
 ### Question 5
+
+

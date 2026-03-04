@@ -4,12 +4,10 @@ project:
   output-dir: _site
 
 book:
-  title: "Statistical Computing - Assignment 1"
+  title: "Statistical Computing - Assignment 2"
   chapters: 
     - index.qmd
-    - Prac_1.qmd
-    - Prac_3.qmd
-    - Prac_4.qmd
+    - Prac_12.qmd
 
 
 format:
