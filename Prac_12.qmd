@@ -11,6 +11,7 @@ library(doParallel) # uses %dopar%
 library(MASS) # glalaxies data for Q2
 library(iterators) # for Question 4 (irnorm)
 library(tibble)
+library(knitr)
 ```
 
 ### Quetsion 1
@@ -93,7 +94,8 @@ registerDoParallel(cl)
 
 system.time({
   galaxies_bs_medians_1000 <- foreach(i = 1:3, .combine = c) %dopar% {
-    bs_sample_1000 <- replicate(1000,median(sample(data,length(data),replace = T)))
+    bs_sample_1000 <- replicate(
+      1000,median(sample(data,length(data),replace = T)))
     bs_sample_1000
 }
 })
@@ -121,13 +123,12 @@ n <- 1000
 system.time({
   coverage_pci_bs <- foreach(i = 1:n, .combine = c) %dopar% {
     new_sample <- rexp(n = 50, rate = 1/sample_mean)
-    bs_sample_1000 <- replicate(n,mean(sample(new_sample,length(new_sample),replace = T)))
+    bs_sample_1000 <- replicate(
+      n,mean(sample(new_sample,length(new_sample),replace = T)))
     mean_quantiles <- quantile(bs_sample_1000,probs = c(0.025,0.975))
-  coverage_check <- if (mean_quantiles[1] <= sample_mean & sample_mean <= mean_quantiles[2]) {
-  1
-  } else {
-    0
-  }
+  coverage_check <- if (
+    mean_quantiles[1] <= sample_mean & sample_mean <= mean_quantiles[2]) {1} 
+  else {0}
   coverage_check
 }
 })
@@ -168,7 +169,7 @@ time_foreach <- system.time({
   set.seed(1234)
   cl <- makeCluster(3)
   registerDoParallel(cl)
-  max_values_fe <- foreach(vec = irnorm(5, count = 3),
+  max_values_foreach <- foreach(vec = irnorm(5, count = 3),
                           .combine = c) %dopar% {
   max(vec)
 }
@@ -176,7 +177,7 @@ time_foreach <- system.time({
 
 stopCluster(cl)
 
-max_values_fe
+max_values_foreach
 time_foreach
 ```
 
@@ -191,41 +192,45 @@ time_parLapply <- system.time({
     max(vec)
   }
   
-  max_values_pl <- parLapply(cl = cl, 1:3, max_vec_func)
+  max_values_parLapply <- parLapply(cl = cl, 1:3, max_vec_func)
+  max_values_parLapply <- unlist(max_values_parLapply)
 })
 
 stopCluster(cl)
 
-max_values_pl
+max_values_parLapply
 time_parLapply
 ```
 
 ```{r}
 time_replicate <- system.time({
   set.seed(1234)
-  cl <- makeCluster(3)
-  registerDoParallel(cl)
-  
-  max_values_r <- replicate(3,max(rnorm(5)))
+  max_values_replicate <- replicate(3,max(rnorm(5)))
 })
 
-stopCluster(cl)
-
-max_values_r
+max_values_replicate
 time_replicate
 ```
 The table below shows shows the time it took each of the three above methods to run:
 
 ```{r}
 times <- rbind(time_foreach,time_parLapply,time_replicate)
-knitr::kable(times, caption = "Times Comparison of Three Methods")
+kable(times[,1:3], caption = "Times Comparison of Three Methods")
 ```
-The table above shows us that each function had approximately the same run time.
+From the table above, we can see that the foreach and parLapply functions have a similar run times, with no noticeable difference between them. Replicate, however, despite not running in parallel is much faster, practically instant. The time it takes to setup the clusters in foreach and parLapply make them slower for such a simple task. The benefit of parallelisation was not worth it.
 
 
 ```{r}
-max_values_fe
-max_values_pl
-max_values_r
+max_values_all <- rbind(max_values_foreach,
+                        max_values_parLapply,
+                        max_values_replicate)
 ```
 
+Below we compare the maximum values of each vector that each method produced:
+
+```{r}
+kable(round(max_values_all,2), 
+      caption = "Max Value Comparison of Three Methods")
+```
+
+From the table above, we can see that the use of irnorm in the foreach function resulted in the seed working correctly, as it matches the values achieved by replicate. Unfortunately, parLapply did not achieve the same values as each worker generates its own random numbers independently.
