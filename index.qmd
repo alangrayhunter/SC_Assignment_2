@@ -8,4 +8,3 @@ date: "March 2026"
 This is the home page for my Quarto project for Assignment 4. The  practical for this assignment can be found below:
 
 - [Practical 12](Prac_12.qmd)
-
