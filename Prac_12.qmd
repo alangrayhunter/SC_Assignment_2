@@ -10,6 +10,7 @@ library(foreach) # uses %do%
 library(doParallel) # uses %dopar%
 library(MASS) # glalaxies data for Q2
 library(iterators) # for Question 4 (irnorm)
+library(tibble)
 ```
 
 ### Quetsion 1
@@ -18,7 +19,7 @@ library(iterators) # for Question 4 (irnorm)
 cl <- makeCluster(3)
 registerDoParallel(cl)
 
-exp_mean_and_var <- foreach(i = 1:1000, .combine = rbind) %dopar% {
+exp_mean_and_var <- foreach(i = 1:100, .combine = rbind) %dopar% {
     random_sample <- rexp(100,rate=1)
     sample_mean <- mean(random_sample)
     sample_variance <- var(random_sample)
@@ -27,11 +28,15 @@ exp_mean_and_var <- foreach(i = 1:1000, .combine = rbind) %dopar% {
 }
 
 stopCluster(cl)
+
+colnames(exp_mean_and_var) <- c("Mean", "Variance")
 ```
 
+Below are the first 10 rows of our resulting Mean and Variance for each of our 100 random samples:
+
 ```{r}
-colnames(exp_mean_and_var) <- c("Mean", "Variance")
-head(exp_mean_and_var)
+exp_mean_and_var_tb <- as_tibble(exp_mean_and_var)
+exp_mean_and_var_tb
 ```
 
 ### Question 2
@@ -138,51 +143,89 @@ coverage
 ### Question 4
 
 ```{r}
-set.seed(1234)
-
 cl <- makeCluster(3)
 registerDoParallel(cl)
 
-vector_maxes <- foreach(i = 1:3, .combine = c, .packages = "iterators") %dopar% {
-  vec <- irnorm(n = 5, mean = 0, sd = 1)
-  # Pull all numbers into a numeric vector
-  vec_numbers <- numeric(5)
-  vec_numbers[1] <- nextElem(vec)
-  vec_numbers[2] <- nextElem(vec)
-  vec_numbers[3] <- nextElem(vec)
-  vec_numbers[4] <- nextElem(vec)
-  vec_numbers[5] <- nextElem(vec)
-  max(vec_numbers)
-}
+set.seed(1234)
 
-stopCluster(cl)
-
-vector_maxes
-```
-
-
-```{r}
-set.seed(1234)  # set seed BEFORE foreach
-
-# Use foreach and irnorm to generate 3 vectors of 5 random normals
-largest_values <- foreach(i = 1:3, .combine = c) %do% {
-  # create an iterator of 5 normal random numbers
-  vec_iter <- irnorm(n = 5, mean = 0, sd = 1)
-  
-  # pull all 5 numbers from the iterator into a numeric vector
-  vec <- sapply(1:5, function(x) nextElem(vec_iter))
-  
-  # find the largest value
+max_values <- foreach(vec = irnorm(5, count = 3),
+                          .combine = c) %dopar% {
   max(vec)
 }
-
-largest_values
+stopCluster(cl)
 ```
+The below 3 values are the maximum of each of the 3 vectors of 5 random variables:
 
-
+```{r}
+max_values
+```
 
 
 ### Question 5
 
+```{r}
+time_foreach <- system.time({
+  set.seed(1234)
+  cl <- makeCluster(3)
+  registerDoParallel(cl)
+  max_values_fe <- foreach(vec = irnorm(5, count = 3),
+                          .combine = c) %dopar% {
+  max(vec)
+}
+})
 
-tbc
+stopCluster(cl)
+
+max_values_fe
+time_foreach
+```
+
+```{r}
+time_parLapply <- system.time({
+  set.seed(1234)
+  cl <- makeCluster(3)
+  registerDoParallel(cl)
+  
+  max_vec_func <- function(i){
+    vec <- rnorm(5)
+    max(vec)
+  }
+  
+  max_values_pl <- parLapply(cl = cl, 1:3, max_vec_func)
+})
+
+stopCluster(cl)
+
+max_values_pl
+time_parLapply
+```
+
+```{r}
+time_replicate <- system.time({
+  set.seed(1234)
+  cl <- makeCluster(3)
+  registerDoParallel(cl)
+  
+  max_values_r <- replicate(3,max(rnorm(5)))
+})
+
+stopCluster(cl)
+
+max_values_r
+time_replicate
+```
+The table below shows shows the time it took each of the three above methods to run:
+
+```{r}
+times <- rbind(time_foreach,time_parLapply,time_replicate)
+knitr::kable(times, caption = "Times Comparison of Three Methods")
+```
+The table above shows us that each function had approximately the same run time.
+
+
+```{r}
+max_values_fe
+max_values_pl
+max_values_r
+```
+
