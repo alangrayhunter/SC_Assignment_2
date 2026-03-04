@@ -232,16 +232,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 100 × 2
     Mean Variance
    &lt;dbl&gt;    &lt;dbl&gt;
- 1 1.29     1.59 
- 2 1.02     0.717
- 3 0.952    0.788
- 4 1.02     0.894
- 5 0.972    0.867
- 6 1.05     1.43 
- 7 1.09     1.33 
- 8 1.03     1.12 
- 9 0.880    0.984
-10 1.09     1.25 
+ 1 0.978    0.839
+ 2 0.853    0.734
+ 3 1.11     1.07 
+ 4 0.920    0.965
+ 5 1.13     1.67 
+ 6 0.946    0.834
+ 7 1.10     0.927
+ 8 1.13     1.28 
+ 9 1.11     1.19 
+10 1.06     1.02 
 # ℹ 90 more rows</code></pre>
 </div>
 </div>
@@ -265,7 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-   0.28    0.02    0.33 </code></pre>
+   0.24    0.02    0.25 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -291,7 +291,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-   0.28    0.03    0.36 </code></pre>
+   0.22    0.07    0.34 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stopCluster</span>(cl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -303,13 +303,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>({</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  galaxies_bs_medians_1000 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">.combine =</span> c) <span class="sc">%dopar%</span> {</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    bs_sample_1000 <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>,<span class="fu">median</span>(<span class="fu">sample</span>(data,<span class="fu">length</span>(data),<span class="at">replace =</span> T)))</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    bs_sample_1000</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    bs_sample_1000 <span class="ot">&lt;-</span> <span class="fu">replicate</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1000</span>,<span class="fu">median</span>(<span class="fu">sample</span>(data,<span class="fu">length</span>(data),<span class="at">replace =</span> T)))</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    bs_sample_1000</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-   0.00    0.00    0.11 </code></pre>
+   0.02    0.00    0.11 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stopCluster</span>(cl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -350,7 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-   0.50    0.04    8.46 </code></pre>
+   0.45    0.09    8.94 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stopCluster</span>(cl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -359,7 +360,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>coverage <span class="ot">&lt;-</span> <span class="fu">sum</span>(coverage_pci_bs)<span class="sc">/</span>n</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>coverage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.921</code></pre>
+<pre><code>[1] 0.941</code></pre>
 </div>
 </div>
 </section>
@@ -407,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>time_foreach</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-   0.00    0.01    0.30 </code></pre>
+   0.00    0.02    0.33 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -429,12 +430,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>max_values_parLapply</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.6094242 0.5810309 1.1683156</code></pre>
+<pre><code>[1] 1.4067074 0.8687848 0.7324748</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>time_parLapply</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-   0.00    0.04    0.27 </code></pre>
+   0.02    0.03    0.31 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -456,7 +457,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The table below shows shows the time it took each of the three above methods to run:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">rbind</span>(time_foreach,time_parLapply,time_replicate)</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(times, <span class="at">caption =</span> <span class="st">"Times Comparison of Three Methods"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(times[,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="at">caption =</span> <span class="st">"Times Comparison of Three Methods"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Times Comparison of Three Methods</caption>
@@ -466,45 +467,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th style="text-align: right;">user.self</th>
 <th style="text-align: right;">sys.self</th>
 <th style="text-align: right;">elapsed</th>
-<th style="text-align: right;">user.child</th>
-<th style="text-align: right;">sys.child</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">time_foreach</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.01</td>
-<td style="text-align: right;">0.30</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.33</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">time_parLapply</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.04</td>
-<td style="text-align: right;">0.27</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">0.31</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">time_replicate</td>
-<td style="text-align: right;">0</td>
 <td style="text-align: right;">0.00</td>
 <td style="text-align: right;">0.00</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.00</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<p>The table above shows us that each function has a similar run time to the others, with no noticeable differences.</p>
+<p>From the table above, we can see that the foreach and parLapply functions have a similar run times, with no noticeable difference between them. Replicate, however, despite not running in parallel is much faster, practically instant. The time it takes to setup the clusters in foreach and parLapply make them slower for such a simple task. The benefit of parallelisation was not worth it.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>max_values_all <span class="ot">&lt;-</span> <span class="fu">rbind</span>(max_values_foreach,</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                        max_values_parLapply,</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>                        max_values_replicate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p>Below we compare the maximum values of each vector that each method produced:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(max_values_all,<span class="dv">2</span>), </span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Max Value Comparison of Three Methods"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -520,9 +514,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td style="text-align: left;">max_values_parLapply</td>
-<td style="text-align: right;">1.61</td>
-<td style="text-align: right;">0.58</td>
-<td style="text-align: right;">1.17</td>
+<td style="text-align: right;">1.41</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">0.73</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">max_values_replicate</td>
@@ -534,6 +528,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+<p>From the table above, we can see that the use of irnorm in the foreach function resulted in the seed working correctly, as it matches the values achieved by replicate. Unfortunately, parLapply did not achieve the same values as each worker generates its own random numbers independently.</p>
 
 
 </section>
